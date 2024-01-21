@@ -13,51 +13,57 @@
         <div class="container-fluid">
             <a class="navbar-brand" href="#">My Vue</a>
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li v-for="(link, index) in links" class="nav-item" :key="index"> <!-- v-for er et 'directive', som genererer componenter fra <templaten/>. Det er anderledes fra React, som laver componentet i JS-->
+                <li v-for="(page, index) in pages" class="nav-item" :key="index"> <!-- v-for er et 'directive', som genererer componenter fra <templaten/>. Det er anderledes fra React, som laver componentet i JS-->
                     <!-- Using v-bind: (shorthand) makes the content in the string "" javascript. Therefore, we're not going to use {{param}, but `${param}`} -->
                     <a 
                         class="nav-link"
                         aria-current="page"
-                        :href="link.url"
-                        :title="`This link goes to the ${link.text} page.`"
+                        :href="page.link.url"
+                        :title="`This link goes to the ${page.pageTitle} page.`"
+                        @click.prevent="activePage = index"
                     >
-                            {{ link.text }}
+                            {{ page.link.text }}
                     </a>
                 </li>
             </ul>
         </div>
     </nav>
     <div id="content" class="container">
-        <h1>{{ pageTitle }}</h1>
-        <p>{{ content }}</p>
+        <h1>{{ pages[activePage].pageTitle }}</h1>
+        <p>{{ pages[activePage].content }}</p>
     </div>
     <p>{{ content }}</p>
 
 <script>
     const { createApp, ref } = Vue
+    
     createApp({
         data() {
             return {
-                links: [
-                    {text: 'Home', url: 'home.html'}, 
-                    {text: 'About', url: 'about.html'}, 
-                    {text: 'Contact', url: 'contact.html'}, 
+                activePage: 0,
+                pageTitle: 'Hello Vue',
+                content: 'Welcome to my first Vue app!',
+                pages: [
+                    { 
+                        link: { text: 'Home', url: 'home.html' },
+                        pageTitle: 'Home Page',
+                        content: 'This is Home content'
+                    },
+                    { 
+                        link: { text: 'About', url: 'about.html' },
+                        pageTitle: 'About Page',
+                        content: 'This is About content'
+                    },
+                    { 
+                        link: { text: 'Contact', url: 'contact.html' },
+                        pageTitle: 'Contact Page',
+                        content: 'This is Contact content'
+                    },
                 ]
             }
         }
-    }).mount('nav') // Mounting on nav directly since we don't expect to have multiple.
-
-    // Createa a Vue instance. A single webpage can have multiple Vue instances. The object passed are called options.
-    createApp({
-        // data is the state
-        data() {
-            return {
-                pageTitle: 'Hello Vue',
-                content: 'Welcome to my first Vue app!'
-            }
-        }
     }
-    ).mount('#content'); // .mount on the content div element makes it a 'template' for the Vue instance.
+    ).mount('body');
 </script> 
 </body>
 </html>
