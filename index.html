@@ -35,7 +35,10 @@
                 </button>
             </div>
         </nav>
-        <page-viewer></page-viewer>
+        <page-viewer
+            :page="pages[activePage]"
+        >
+        </page-viewer>
 
     <script>
         const { createApp } = Vue
@@ -79,10 +82,11 @@
         });
 
         app.component('page-viewer', {
+            props: ['page'],
             template: `
                 <div class="container">
-                    <h1>{{page title}}</h1>
-                    <p>page content</p>
+                    <h1>{{page.pageTitle}}</h1>
+                    <p>{{page.pageContent}}</p>
                 </div>
             `
         });
