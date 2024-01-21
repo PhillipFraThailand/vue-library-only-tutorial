@@ -11,7 +11,7 @@
 <body>
     <nav 
         class="navbar navbar-expand-lg"
-        :class="{ 'navbar-light bg-light': !useDarkNavbar, 'navbar-dark bg-dark': useDarkNavbar}"
+        :class="navbarClasses"
         >
         <div class="container-fluid">
             <a class="navbar-brand" href="#">My Vue</a>
@@ -46,6 +46,18 @@
     const { createApp, ref } = Vue
     
     createApp({
+        // computed properties are functions that are evaluated on the fly, so they are reactive to changes.
+        computed: {
+            navbarClasses() { // Note that it's a function. Putting this function inside of computed, tells Vue, that all used data inside, are dependencies it should watch for changes.
+                return {
+                    'navbar-dark': this.useDarkNavbar,
+                    'bg-dark': this.useDarkNavbar,
+                    'navbar-light': !this.useDarkNavbar,
+                    'bg-light': !this.useDarkNavbar
+                }
+            }
+        },
+        // data simply initializes the data, but does not 'react' to changes.
         data() {
             return {
                 activePage: 0,
