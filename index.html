@@ -9,36 +9,16 @@
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 </head>
 <body>
-    <nav 
-        :class="[`navbar-${theme}, bg-${theme}`, navbar, navbar-expand-lg]"
-        >
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">My Vue</a>
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li v-for="(page, index) in pages" class="nav-item" :key="index"> <!-- v-for er et 'directive', som genererer componenter fra <templaten/>. Det er anderledes fra React, som laver componentet i JS-->
-                    <!-- Using v-bind: (shorthand) makes the content in the string "" javascript. Therefore, we're not going to use {{param}, but `${param}`} -->
-                    <a 
-                        class="nav-link"
-                        :class="{active: activePage === index}"
-                        aria-current="page"
-                        :href="page.link.url"
-                        :title="`This link goes to the ${page.pageTitle} page.`"
-                        @click.prevent="activePage = index"
-                    >
-                        {{ page.link.text }}
-                    </a>
-                </li>
-            </ul>
-            <!-- Since the button does not send user input anywhere thres need to wrap it in a form -->
-                <button class="btn btn-primary" @click.prevent:="changeTheme()">
-                    Toggle theme
-                </button>
-            </div>
-        </nav>
-        <page-viewer
-            :page="pages[activePage]"
-        >
-        </page-viewer>
+    <navbar 
+        :pages="pages"
+        :active-page="activePage"
+        :nav-link-click="(index) => activePage = index"
+    ></navbar>
+
+    <page-viewer
+        :page="pages[activePage]"
+    >
+    </page-viewer>
 
     <script>
         const { createApp } = Vue
@@ -70,15 +50,6 @@
                     ]
                 }
             },
-            methods: {
-                changeTheme() {
-                    let theme = 'light'
-                    if (this.theme === 'light') {
-                        theme = 'dark'
-                    }
-                    this.theme = theme
-                }
-            }   
         });
 
         app.component('page-viewer', {
@@ -90,6 +61,53 @@
                 </div>
             `
         });
+
+        app.component('navbar', {
+             methods: {
+                changeTheme() {
+                    let theme = 'light'
+                    if (this.theme === 'light') {
+                        theme = 'dark'
+                    }
+                    this.theme = theme
+                }
+            },
+            props: ['pages', 'activePage', 'navLinkClick'],
+            data() {
+                return {
+                    theme: 'light',
+                }
+            },
+            // So, when we use the v-bind directive (shorthand :) and it's inside the quotations ("") it's JavaScript and we use ${}.
+            // But, when creating a template we have to escape the quotations in order to be allowed to use the ${} syntax
+            template: `
+                <nav 
+                    :class="[\`navbar-\${theme}\`, \`bg-\${theme}\`, navbar, navbar-expand-lg]"
+                >
+                    <div class="container-fluid">
+                        <a class="navbar-brand" href="#">My Vue</a>
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <li v-for="(page, index) in pages" class="nav-item" :key="index">
+                                <a 
+                                    class="nav-link"
+                                    :class="{active: activePage === index}"
+                                    aria-current="page"
+                                    :href="page.link.url"
+                                    :title="\`This link goes to the \${page.pageTitle} page.\`"
+                                    @click.prevent="navLinkClick(index)"
+                                >
+                                    {{ page.link.text }}
+                                </a>
+                            </li>
+                        </ul>
+                        <button class="btn btn-primary" @click.prevent:="changeTheme()">
+                            Toggle theme
+                        </button>
+                    </div>
+                </nav>
+            `
+        })
+
 
         app.mount('body')
     </script> 
