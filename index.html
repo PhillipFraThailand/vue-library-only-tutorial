@@ -17,12 +17,13 @@
                     <!-- Using v-bind: (shorthand) makes the content in the string "" javascript. Therefore, we're not going to use {{param}, but `${param}`} -->
                     <a 
                         class="nav-link"
+                        :class="{active: activePage === index}"
                         aria-current="page"
                         :href="page.link.url"
                         :title="`This link goes to the ${page.pageTitle} page.`"
                         @click.prevent="activePage = index"
                     >
-                            {{ page.link.text }}
+                        {{ page.link.text }}
                     </a>
                 </li>
             </ul>
