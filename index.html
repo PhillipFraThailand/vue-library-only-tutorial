@@ -13,8 +13,16 @@
         <div class="container-fluid">
             <a class="navbar-brand" href="#">My Vue</a>
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li v-for="link in links" class="nav-item"> <!-- v-for er et 'directive', som genererer componenter fra <templaten/>. Det er anderledes fra React, som laver componentet i JS-->
-                    <a class="nav-link" aria-current="page" href="#">{{ link }}</a>
+                <li v-for="(link, index) in links" class="nav-item" :key="index"> <!-- v-for er et 'directive', som genererer componenter fra <templaten/>. Det er anderledes fra React, som laver componentet i JS-->
+                    <!-- Using v-bind: (shorthand) makes the content in the string "" javascript. Therefore, we're not going to use {{param}, but `${param}`} -->
+                    <a 
+                        class="nav-link"
+                        aria-current="page"
+                        :href="link.url"
+                        :title="`This link goes to the ${link.text} page.`"
+                    >
+                            {{ link.text }}
+                    </a>
                 </li>
             </ul>
         </div>
@@ -30,7 +38,11 @@
     createApp({
         data() {
             return {
-                links: ['Home', 'About', 'Contact']
+                links: [
+                    {text: 'Home', url: 'home.html'}, 
+                    {text: 'About', url: 'about.html'}, 
+                    {text: 'Contact', url: 'contact.html'}, 
+                ]
             }
         }
     }).mount('nav') // Mounting on nav directly since we don't expect to have multiple.
@@ -48,12 +60,4 @@
     ).mount('#content'); // .mount on the content div element makes it a 'template' for the Vue instance.
 </script> 
 </body>
-<!-- 
-    Det her er den mest simple måde at lave en Vue app på.
-    Vi importerere Vue via CDN.
-    Vi laver et script tag, hvor vi laver en Vue instance med createApp.
-    Vi mounter den på et element i DOM'en.
-    Vi kan så bruge Vue's data binding til at vise data fra vores Vue instance.
-    Hvis p'tagget, er uden for degit remote add origin https://github.com/PhillipFraThailand/vue-tutorial.gitt mountede element, vil Vue ikke kunne manipulere det, og p tagget renderer blot det, der står i det.
- -->
 </html>
